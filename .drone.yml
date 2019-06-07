@@ -11,15 +11,14 @@ trigger:
     - push
 
 steps:
+  - name: gomod
+    image: golang:1.12
+    commands:
+      - GOPROXY=https://goproxy.io go mod download
   - name: gofmt
     image: golang:1.12
     commands:
       - bash -c 'count=$(go fmt ./... | wc -l);if [ $count -gt 0 ]; then exit 1; fi'
-
-  - name: gomod
-    image: golang:1.12
-    commands:
-      - go mod download
 
   - name: govet
     image: golang:1.12
