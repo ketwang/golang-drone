@@ -34,13 +34,13 @@ steps:
     commands:
       - go vet ./...
 
-  - name: golint
+  - name: gobuild
     image: golang:1.12
     volumes:
       - name: gopath
         path: /go
     commands:
-      - golangci-lint run --concurrency 8 --deadline=5m ./...
+      - go build -o agent main.go
 
 
 volumes:
