@@ -10,6 +10,10 @@ trigger:
   event:
     - push
 
+volumes:
+  - name: gopath
+    host: /tmp/drone/gopath
+
 steps:
   - name: gofmt
     image: golang:1.12
