@@ -1,0 +1,31 @@
+kind: pipeline
+
+trigger:
+  branch:
+    - master
+    - feature/*
+    - bugfix/*
+    - fix/*
+  event:
+    - push
+
+steps:
+  - name: gofmt
+    image: golang:1.12
+    commands:
+      - bash -c 'count=$(go fmt ./... | wc -l);if [ $count -gt 0 ]; then exit 1; fi'
+
+  - name: gomod
+    image: golang:1.12
+    commands:
+      - go mod download
+
+  - name: govet
+    image: golang:1.12
+    commands:
+      - go vet ./...
+
+  - name: golint
+    image: golang:1.12
+    commands:
+      - golangci-lint run --concurrency 8 --deadline=5m ./...
