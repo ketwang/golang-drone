@@ -13,25 +13,37 @@ trigger:
 steps:
   - name: gomod
     image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
     commands:
       - GOPROXY=https://goproxy.io go mod download
   - name: gofmt
     image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
     commands:
       - bash -c 'count=$(go fmt ./... | wc -l);if [ $count -gt 0 ]; then exit 1; fi'
 
   - name: govet
     image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
     commands:
       - go vet ./...
 
   - name: golint
     image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
     commands:
       - golangci-lint run --concurrency 8 --deadline=5m ./...
 
 
 volumes:
-  - name: /go
+  - name: gopath
     host:
-      path: /tmp/test_drone
+      path: /tmp/drone_test
