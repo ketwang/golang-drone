@@ -29,3 +29,9 @@ steps:
     image: golang:1.12
     commands:
       - golangci-lint run --concurrency 8 --deadline=5m ./...
+
+
+volumes:
+  - name: /go
+    host:
+      path: /tmp/test_drone
