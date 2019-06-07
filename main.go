@@ -14,4 +14,5 @@ func main() {
 
 	fmt.Println("jjjjjk")
 	fmt.Println("hehheh")
+	fmt.Println("success")
 }
