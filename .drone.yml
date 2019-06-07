@@ -12,7 +12,8 @@ trigger:
 
 volumes:
   - name: gopath
-    host: /tmp/drone/gopath
+    host:
+      path: /tmp/drone/gopath
 
 steps:
   - name: gofmt
