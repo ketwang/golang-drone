@@ -41,6 +41,7 @@ steps:
         path: /go
     commands:
       - go build -o agent main.go
+      - cp agent /go
 
 
 volumes:
