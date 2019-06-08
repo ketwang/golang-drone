@@ -18,6 +18,7 @@ steps:
         path: /go
     commands:
       - GOPROXY=https://goproxy.io go mod download
+
   - name: gofmt
     image: golang:1.12
     volumes:
@@ -33,6 +34,24 @@ steps:
         path: /go
     commands:
       - go vet ./...
+
+
+  - name: golangci-lint
+    image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
+    commands:
+      - go get -u github.com/golangci/golangci-lint/cmd/golangci-lint && golangci-lint run ./...
+
+  - name: staticcheck
+    image: golang:1.12
+    volumes:
+      - name: gopath
+        path: /go
+    commands:
+      - go get -u honnef.co/go/staticcheck/cmd/staticcheck && staticcheck ./...
+
 
   - name: gobuild
     image: golang:1.12
