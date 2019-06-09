@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+diffcount=`diff hooks/pre-commit .git/hooks/pre-commit | wc -l`
+if [ ${diffcount} -ne 0 ]; then
+    echo "please run 'make hooks' to update you local pre-commit hook"
+    exit 1
+fi
+
+echo "fmt check"
+fmtcount=`go fmt ./... 2>&1 | wc -l`
+if [ $fmtcount -gt 0 ]; then
+    echo "Some files aren't formatted, please run 'go fmt ./...' to format your source code before committing"
+    exit 1
+fi
+
+echo "vet check"
+vetcount=`go vet ./... 2>&1  | wc -l`
+if [ $vetcount -gt 0 ]; then
+    echo "Some files aren't passing vet heuristics,
+    please run 'go vet ./...' to see the errors it flags and correct your source code before committing"
+    exit 1
+fi
+
+echo "lint check"
+lintcount=`golangci-lint run ./...  | wc -l`
+if [ $lintcount -gt 0 ]; then
+    echo "Some files aren't passing lint check,
+    please run 'golangci-lint run ./...' to see the errors it flags and correct your source code before committing"
+    exit 1
+fi
+
+
+#add other here
