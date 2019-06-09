@@ -12,7 +12,7 @@ trigger:
 
 steps:
   - name: gomod
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
@@ -20,7 +20,7 @@ steps:
       - GOPROXY=https://goproxy.io go mod download
 
   - name: gofmt
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
@@ -28,7 +28,7 @@ steps:
       - bash -c 'count=$(go fmt ./... | wc -l);if [ $count -gt 0 ]; then exit 1; fi'
 
   - name: govet
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
@@ -37,20 +37,20 @@ steps:
 
 
   - name: golangci-lint
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
     commands:
-      - go get -u github.com/golangci/golangci-lint/cmd/golangci-lint && golangci-lint run ./...
+      - golangci-lint run ./...
 
   - name: staticcheck
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
     commands:
-      - go get -u honnef.co/go/staticcheck/cmd/staticcheck && staticcheck ./...
+      - staticcheck ./...
 
 
   - name: gobuild
