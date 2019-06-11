@@ -30,11 +30,11 @@ func (s Size) BytesToMB() float64 {
 	return float64(s) / float64(MB)
 }
 
-func (s Size) BytesToGB() float64  {
+func (s Size) BytesToGB() float64 {
 	return float64(s) / float64(GB)
 }
 
-func (s Size) BytesToTB() float64  {
+func (s Size) BytesToTB() float64 {
 	return float64(s) / float64(TB)
 }
 
@@ -42,7 +42,7 @@ func (s Size) BytesToPB() float64 {
 	return float64(s) / float64(PB)
 }
 
-func (s Size) String() string  {
+func (s Size) String() string {
 	switch {
 	case uint64(s) < KB:
 		return fmt.Sprintf("%f bytes", float64(s))
@@ -83,6 +83,3 @@ func (t Time) String() string {
 		return fmt.Sprintf("%f s", t.NsToSecond())
 	}
 }
-
-
-

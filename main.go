@@ -18,7 +18,7 @@ func main() {
 			return key
 		}
 
-		return fmt.Sprintf("%s: %f", key, value[len(value) - 1])
+		return fmt.Sprintf("%s: %f", key, value[len(value)-1])
 	}
 
 	lw := termui.NewLineWidget(100, format)
@@ -36,8 +36,8 @@ func main() {
 		lw.Update(map[string]float64{"rx": 14}, false)
 		ui.Render(grid)
 		select {
-		case <- timer.C:
-		case <- ui.PollEvents():
+		case <-timer.C:
+		case <-ui.PollEvents():
 			return
 		}
 	}

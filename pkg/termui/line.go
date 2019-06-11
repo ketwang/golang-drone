@@ -6,48 +6,47 @@ import (
 	"sort"
 )
 
-const MAXLINES  = 7
+const MAXLINES = 7
 
 type LineGraph struct {
 	*ui.Block
-	Labels []string
-	Data   map[string][]float64
-	Colors map[string]ui.Color
+	Labels   []string
+	Data     map[string][]float64
+	Colors   map[string]ui.Color
 	MaxValue float64
 }
 
 func NewLineGraph(maxValue float64) *LineGraph {
 	lg := &LineGraph{
-		Block: ui.NewBlock(),
+		Block:  ui.NewBlock(),
 		Labels: make([]string, 0),
-		Data: make(map[string][]float64),
+		Data:   make(map[string][]float64),
 		Colors: make(map[string]ui.Color),
 	}
 
 	return lg
 }
 
-
 type LineWidget struct {
 	*LineGraph
-	format func(key string, value []float64) string
-	maxValue  float64
+	format       func(key string, value []float64) string
+	maxValue     float64
 	previousData map[string]float64
 }
 
 func NewLineWidget(maxValue float64, format func(key string, value []float64) string) *LineWidget {
 	lw := &LineWidget{
 		LineGraph: NewLineGraph(maxValue),
-		format: format,
-		maxValue: maxValue,
+		format:    format,
+		maxValue:  maxValue,
 	}
 
 	return lw
 }
 
-func (lw *LineWidget) Update(data map[string]float64, delta bool)  {
+func (lw *LineWidget) Update(data map[string]float64, delta bool) {
 	keys := make([]string, len(data))
-	for k, _ := range data {
+	for k := range data {
 		keys = append(keys, k)
 	}
 
@@ -68,7 +67,7 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool)  {
 			deletedKeys = append(deletedKeys, key)
 		} else {
 			if delta {
-				lw.Data[key] = append(lw.Data[key], data[key] - lw.previousData[key])
+				lw.Data[key] = append(lw.Data[key], data[key]-lw.previousData[key])
 			} else {
 				lw.Data[key] = append(lw.Data[key], data[key])
 			}
@@ -77,7 +76,7 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool)  {
 
 	//add new entry
 	for _, key := range keys {
-		if _, ok := lw.Data[key]; ! ok {
+		if _, ok := lw.Data[key]; !ok {
 			lw.Data[key] = make([]float64, 0)
 			lw.Data[key] = append(lw.Data[key], 0)
 		}
@@ -92,8 +91,7 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool)  {
 	lw.previousData = data
 }
 
-
-func (lw *LineWidget) Draw(buf *ui.Buffer)  {
+func (lw *LineWidget) Draw(buf *ui.Buffer) {
 	lw.Block.Draw(buf)
 
 	yStart := lw.Inner.Min.Y + 1
@@ -103,7 +101,7 @@ func (lw *LineWidget) Draw(buf *ui.Buffer)  {
 
 	index := 0
 	for _, key := range lw.Labels {
-		if yStart + index > yEnd {
+		if yStart+index > yEnd {
 			break
 		}
 		for length, char := range lw.format(key, lw.Data[key]) {
