@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	ui "github.com/gizak/termui/v3"
+	"math/rand"
 	"time"
+	"util/pkg/convert"
 	"util/pkg/termui"
 )
 
@@ -18,22 +20,25 @@ func main() {
 			return key
 		}
 
-		return fmt.Sprintf("%s: %f", key, value[len(value)-1])
+		v := value[len(value)-1]
+		return fmt.Sprintf("%s: %s/s", key, convert.Size(v).String())
 	}
 
 	lw := termui.NewLineWidget(100, format)
 	lw.Title = "hahahaha"
 
 	entries := make([]interface{}, 0)
-	entries = append(entries, ui.NewRow(1.0/3, ui.NewCol(1.0, lw)))
+	entries = append(entries, ui.NewRow(2.0/3, ui.NewCol(1.0, lw)))
 
+	termWidth, termHeight := ui.TerminalDimensions()
 	grid := ui.NewGrid()
+	grid.SetRect(0, 0, termWidth, termHeight)
 	grid.Set(entries...)
 
 	timer := time.NewTicker(5 * time.Second)
 
 	for {
-		lw.Update(map[string]float64{"rx": 14}, false)
+		lw.Update(map[string]float64{"rx": float64(rand.Intn(100))}, false)
 		ui.Render(grid)
 		select {
 		case <-timer.C:

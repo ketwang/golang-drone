@@ -59,8 +59,8 @@ steps:
       - name: gopath
         path: /go
     commands:
-      - go build -o agent main.go
-      - cp agent /go
+      - CGO_ENABLED=0 ./scripts/build.sh agent
+      - cp ./binaryfiles/* /go
 
 
 volumes:
