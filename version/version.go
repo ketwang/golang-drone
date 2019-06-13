@@ -30,6 +30,7 @@ func NewCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("version:   ", Version)
 			fmt.Println("git sha:   ", GitCommit)
+			fmt.Println("git branch:	", GitBranch)
 			fmt.Println("go version:", GoVersion)
 			fmt.Println("built:     ", BuildTime)
 			return nil
