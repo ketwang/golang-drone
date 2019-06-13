@@ -54,7 +54,7 @@ steps:
 
 
   - name: gobuild
-    image: golang:1.12
+    image: ketwang/go1.12-with-gotools
     volumes:
       - name: gopath
         path: /go
