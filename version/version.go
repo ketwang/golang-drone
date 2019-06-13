@@ -6,6 +6,8 @@ import (
 )
 
 var (
+
+
 	// eg: 0.0.1
 	Version string = "version not defined, please run ./build.sh to build"
 
