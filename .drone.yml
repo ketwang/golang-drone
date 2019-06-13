@@ -59,7 +59,7 @@ steps:
       - name: gopath
         path: /go
     commands:
-      - CGO_ENABLED=0 ./scripts/build.sh agent
+      - CGO_ENABLED=0 ./script/build.sh agent
       - cp ./binaryfiles/* /go
 
 
