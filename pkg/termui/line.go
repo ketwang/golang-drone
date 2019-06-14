@@ -6,7 +6,10 @@ import (
 	"sort"
 )
 
-const MAXLINES = 7
+const (
+	MAXLINES = 7
+	SCALE    = 4
+)
 
 type LineGraph struct {
 	*ui.Block
@@ -36,16 +39,17 @@ type LineWidget struct {
 
 func NewLineWidget(maxValue float64, format func(key string, value []float64) string) *LineWidget {
 	lw := &LineWidget{
-		LineGraph: NewLineGraph(maxValue),
-		format:    format,
-		maxValue:  maxValue,
+		LineGraph:    NewLineGraph(maxValue),
+		format:       format,
+		maxValue:     maxValue,
+		previousData: make(map[string]float64),
 	}
 
 	return lw
 }
 
 func (lw *LineWidget) Update(data map[string]float64, delta bool) {
-	keys := make([]string, len(data))
+	keys := make([]string, 0)
 	for k := range data {
 		keys = append(keys, k)
 	}
@@ -58,7 +62,7 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool) {
 			break
 		}
 
-		lw.Colors[key] = ui.Color(index)
+		lw.Colors[key] = ui.Color(index + 1)
 	}
 
 	deletedKeys := make([]string, 0)
@@ -78,7 +82,9 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool) {
 	for _, key := range keys {
 		if _, ok := lw.Data[key]; !ok {
 			lw.Data[key] = make([]float64, 0)
-			lw.Data[key] = append(lw.Data[key], 0)
+			if !delta {
+				lw.Data[key] = append(lw.Data[key], data[key])
+			}
 		}
 	}
 
@@ -94,22 +100,70 @@ func (lw *LineWidget) Update(data map[string]float64, delta bool) {
 func (lw *LineWidget) Draw(buf *ui.Buffer) {
 	lw.Block.Draw(buf)
 
-	yStart := lw.Inner.Min.Y + 1
-	yEnd := lw.Inner.Max.Y - 1
-	xStart := lw.Inner.Min.X + 1
-	xEnd := lw.Inner.Max.X - 1
+	yStart := lw.Inner.Min.Y
+	yEnd := lw.Inner.Max.Y
+	xStart := lw.Inner.Min.X
+	xEnd := lw.Inner.Max.X
 
-	index := 0
+	// draw label
+	height := 0
 	for _, key := range lw.Labels {
-		if yStart+index > yEnd {
-			break
+		if yStart+height > yEnd {
+			return
 		}
 		for length, char := range lw.format(key, lw.Data[key]) {
 			if length > xEnd {
 				break
 			}
-			buf.SetCell(ui.NewCell(rune(char), ui.NewStyle(lw.Colors[key])), image.Point{X: xStart + length, Y: yStart + index})
+			buf.SetCell(ui.NewCell(rune(char), ui.NewStyle(lw.Colors[key])), image.Point{X: xStart + length, Y: yStart + height})
 		}
-		index++
+		height++
 	}
+
+	// draw line
+	newRect := image.Rectangle{
+		Min: image.Point{
+			X: xStart,
+			Y: yStart + height,
+		},
+		Max: image.Point{
+			X: xEnd,
+			Y: yStart,
+		},
+	}
+	canvas := ui.NewCanvas()
+	canvas.Rectangle = newRect
+
+	normalization := float64(newRect.Dy()) / lw.maxValue
+
+	for _, key := range lw.Labels {
+		if len(lw.Data[key])*SCALE > newRect.Dx() {
+			lw.Data[key] = lw.Data[key][1:]
+		}
+
+		if len(lw.Data[key]) < 2 {
+			continue
+		}
+
+		data := lw.Data[key]
+		//length := len(data)
+		previousValue := data[0]
+		for index, value := range data[1:] {
+			canvas.SetLine(
+				image.Point{
+					X: (index + 1) * SCALE,
+					Y: int(previousValue * normalization),
+				},
+				image.Point{
+					X: index * SCALE,
+					Y: int(value * normalization),
+				},
+				lw.Colors[key],
+			)
+			previousValue = value
+		}
+	}
+
+	canvas.Draw(buf)
+
 }
