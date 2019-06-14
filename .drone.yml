@@ -62,7 +62,7 @@ steps:
 
 
   - name: gobuild
-    image: ketwang/go1.12-with-gotools
+    image: ketwang/go1.12-with-gotools:date
     depends_on:
       - gofmt
       - govet
