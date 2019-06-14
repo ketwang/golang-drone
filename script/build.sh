@@ -39,9 +39,9 @@ rm -f ${ERROR_LOG}
 
 COMMIT=`git rev-parse --short HEAD`
 BRANCH=`git rev-parse --abbrev-ref HEAD`
-BUILT=`/usr/bin/date '+%Y-%m-%d %H:%M:%S'`
+BUILT=`date '+%Y-%m-%d %H:%M:%S'`
 GO_VERSION=`go version`
-LDFLAGS="-X util/version.Version=${VERSION} -X 'util//version.BuildTime=${BUILT}' -X util/version.GitBranch=${BRANCH} -X util/version.GitCommit=${COMMIT} -X 'util/version.GoVersion=${GO_VERSION#"go version "}'"
+LDFLAGS="-X util/version.Version=${VERSION} -X 'util/version.BuildTime=${BUILT}' -X util/version.GitBranch=${BRANCH} -X util/version.GitCommit=${COMMIT} -X 'util/version.GoVersion=${GO_VERSION#"go version "}'"
 # go build -ldflags "-extldflags \"-static\" ${LDFLAGS}" -o ${OUTPUT_DIR}/hybird-${MODULE} ./cmd/${MODULE}/*.go
 
 for MODULE in $@; do
