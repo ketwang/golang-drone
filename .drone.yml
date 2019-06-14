@@ -21,6 +21,8 @@ steps:
 
   - name: gofmt
     image: ketwang/go1.12-with-gotools
+    depends_on:
+      - gomod
     volumes:
       - name: gopath
         path: /go
@@ -29,6 +31,8 @@ steps:
 
   - name: govet
     image: ketwang/go1.12-with-gotools
+    depends_on:
+      - gomod
     volumes:
       - name: gopath
         path: /go
@@ -38,6 +42,8 @@ steps:
 
   - name: golangci-lint
     image: ketwang/go1.12-with-gotools
+    depends_on:
+      - gomod
     volumes:
       - name: gopath
         path: /go
@@ -46,6 +52,8 @@ steps:
 
   - name: staticcheck
     image: ketwang/go1.12-with-gotools
+    depends_on:
+      - gomod
     volumes:
       - name: gopath
         path: /go
@@ -55,6 +63,13 @@ steps:
 
   - name: gobuild
     image: ketwang/go1.12-with-gotools
+    depends_on:
+      - gofmt
+      - govet
+      - golangci-lint
+      - staticcheck
+    environment:
+      TZ: Asia/Shanghai
     volumes:
       - name: gopath
         path: /go
