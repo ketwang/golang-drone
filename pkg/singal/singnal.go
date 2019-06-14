@@ -9,11 +9,11 @@ import (
 
 var (
 	// hup used for reload configuration
-	reloadingSignalList = []os.Signal{syscall.SIGHUP}
-	terminationSignalList =  []os.Signal{syscall.SIGINT, syscall.SIGTERM}
+	reloadingSignalList   = []os.Signal{syscall.SIGHUP}
+	terminationSignalList = []os.Signal{syscall.SIGINT, syscall.SIGTERM}
 )
 
-func init()  {
+func init() {
 	//default handling: ignore sig hup signal
 	signal.Ignore(reloadingSignalList...)
 }
@@ -30,8 +30,8 @@ func WitchSingalsContext(ctx context.Context) context.Context {
 		defer cancel()
 
 		select {
-		case <- ctx.Done():
-		case <- sig:
+		case <-ctx.Done():
+		case <-sig:
 		}
 	}()
 
@@ -50,8 +50,8 @@ func WithReloadingContext() context.Context {
 		defer cancel()
 
 		select {
-		case <- ctx.Done():
-		case <- sig:
+		case <-ctx.Done():
+		case <-sig:
 		}
 	}()
 
