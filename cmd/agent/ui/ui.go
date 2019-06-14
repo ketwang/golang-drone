@@ -4,14 +4,14 @@ import "github.com/spf13/cobra"
 
 var (
 	UiCommand = &cobra.Command{
-		Use: "stats",
+		Use:  "stats",
 		Args: cobra.ExactArgs(1),
 		Long: "show xx stats",
 		RunE: uiServe,
 	}
 )
 
-func init()  {
+func init() {
 	UiCommand.Flags().StringP("uuid", "u", "", "uuid string")
 }
 
