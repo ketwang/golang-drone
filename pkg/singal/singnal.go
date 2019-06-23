@@ -10,7 +10,7 @@ import (
 var (
 	// hup used for reload configuration
 	reloadingSignalList   = []os.Signal{syscall.SIGHUP}
-	terminationSignalList = []os.Signal{syscall.SIGINT, syscall.SIGTERM}
+	terminationSignalList = []os.Signal{syscall.SIGINT, syscall.SIGTERM, os.Interrupt}
 )
 
 func init() {
