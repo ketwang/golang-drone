@@ -3,13 +3,13 @@ package ui
 import (
 	"context"
 	"fmt"
+	ui "github.com/gizak/termui/v3"
 	"github.com/spf13/cobra"
 	"math/rand"
 	"time"
 	"util/pkg/convert"
 	singal2 "util/pkg/singal"
 	"util/pkg/terminalui"
-	ui "github.com/gizak/termui/v3"
 )
 
 var (
@@ -21,11 +21,10 @@ var (
 	}
 )
 
-
 func format(key string, value []float64) string {
 	length := len(value)
 	if length > 1 {
-		return fmt.Sprintf("%s: %s", key, convert.Size(value[length - 1]).String())
+		return fmt.Sprintf("%s: %s", key, convert.Size(value[length-1]).String())
 	}
 
 	return fmt.Sprintf("%s: ", key)
@@ -60,8 +59,8 @@ func uiServe(cmd *cobra.Command, args []string) error {
 		})
 		ui.Render(grid)
 		select {
-		case <- ticker.C:
-		case <- ctx.Done():
+		case <-ticker.C:
+		case <-ctx.Done():
 			return nil
 		}
 	}

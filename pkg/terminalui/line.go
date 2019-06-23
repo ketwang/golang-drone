@@ -34,7 +34,6 @@ func NewLineGraph(maxValue float64) *LineGraph {
 type LineWidget struct {
 	*LineGraph
 	format       func(key string, value []float64) string
-	maxValue     float64
 	previousData map[string]float64
 	delta        bool
 }
@@ -124,50 +123,50 @@ func (lw *LineWidget) Draw(buf *ui.Buffer) {
 
 	// draw line
 	/*
-	newRect := image.Rectangle{
-		Min: image.Point{
-			X: xStart,
-			Y: yStart + height,
-		},
-		Max: image.Point{
-			X: xEnd,
-			Y: yStart,
-		},
-	}
-	canvas := ui.NewCanvas()
-	canvas.Rectangle = newRect
+		newRect := image.Rectangle{
+			Min: image.Point{
+				X: xStart,
+				Y: yStart + height,
+			},
+			Max: image.Point{
+				X: xEnd,
+				Y: yStart,
+			},
+		}
+		canvas := ui.NewCanvas()
+		canvas.Rectangle = newRect
 
-	normalization := float64(newRect.Dy()) / lw.maxValue
+		normalization := float64(newRect.Dy()) / lw.maxValue
 
-	for _, key := range lw.Labels {
-		if len(lw.Data[key])*SCALE > newRect.Dx() {
-			lw.Data[key] = lw.Data[key][1:]
+		for _, key := range lw.Labels {
+			if len(lw.Data[key])*SCALE > newRect.Dx() {
+				lw.Data[key] = lw.Data[key][1:]
+			}
+
+			if len(lw.Data[key]) < 2 {
+				continue
+			}
+
+			data := lw.Data[key]
+			//length := len(data)
+			previousValue := data[0]
+			for index, value := range data[1:] {
+				canvas.SetLine(
+					image.Point{
+						X: (index + 1) * SCALE,
+						Y: int(previousValue * normalization),
+					},
+					image.Point{
+						X: index * SCALE,
+						Y: int(value * normalization),
+					},
+					lw.Colors[key],
+				)
+				previousValue = value
+			}
 		}
 
-		if len(lw.Data[key]) < 2 {
-			continue
-		}
-
-		data := lw.Data[key]
-		//length := len(data)
-		previousValue := data[0]
-		for index, value := range data[1:] {
-			canvas.SetLine(
-				image.Point{
-					X: (index + 1) * SCALE,
-					Y: int(previousValue * normalization),
-				},
-				image.Point{
-					X: index * SCALE,
-					Y: int(value * normalization),
-				},
-				lw.Colors[key],
-			)
-			previousValue = value
-		}
-	}
-
-	canvas.Draw(buf)
+		canvas.Draw(buf)
 	*/
 
 }
