@@ -50,7 +50,7 @@ func uiServe(cmd *cobra.Command, args []string) error {
 	grid := ui.NewGrid()
 	grid.Set(entries...)
 
-	ctx := singal2.WitchSingalsContext(context.Background())
+	ctx := singal2.WithSignalsContext(context.Background())
 
 	for {
 		lw.Update(map[string]float64{

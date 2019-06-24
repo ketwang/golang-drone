@@ -18,7 +18,7 @@ func init() {
 	signal.Ignore(reloadingSignalList...)
 }
 
-func WitchSingalsContext(ctx context.Context) context.Context {
+func WithSignalsContext(ctx context.Context) context.Context {
 	newCtx, cancel := context.WithCancel(ctx)
 
 	// define chan to receive signals
@@ -57,3 +57,13 @@ func WithReloadingContext() context.Context {
 
 	return ctx
 }
+
+/*
+annotations:
+    migrate: "false"
+0688df96-9ca9-4320-9119-685e1ac49354
+d31d8188-8ff0-4d38-b24d-24814198f86a
+840fa503-68fa-41aa-96db-d155dec0a9b0
+306f49f5-5ad9-4362-ae04-8bccd8fb5600
+4a4bfce4-554c-4540-96a3-a743da7e4b2a
+*/
