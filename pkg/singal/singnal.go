@@ -2,6 +2,7 @@ package singal
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -31,7 +32,8 @@ func WithSignalsContext(ctx context.Context) context.Context {
 
 		select {
 		case <-ctx.Done():
-		case <-sig:
+		case v := <-sig:
+			fmt.Sprint("got signal: ", v)
 		}
 	}()
 
