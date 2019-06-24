@@ -33,7 +33,7 @@ func WithSignalsContext(ctx context.Context) context.Context {
 		select {
 		case <-ctx.Done():
 		case v := <-sig:
-			fmt.Sprint("got signal: ", v)
+			fmt.Println("got signal: ", v)
 		}
 	}()
 
