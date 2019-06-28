@@ -14,13 +14,13 @@ import (
 
 var (
 	HttpCmd = &cobra.Command{
-		Use: "serve",
+		Use:   "serve",
 		Short: "start a http server",
-		RunE: serve,
+		RunE:  serve,
 	}
 
 	cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name:"cpu_temp_cal",
+		Name: "cpu_temp_cal",
 		Help: "cpu temp cal.",
 		ConstLabels: map[string]string{
 			"cpu_num": "all",
@@ -33,7 +33,7 @@ var (
 			Help: "show hdd failure counter",
 		},
 		[]string{"hd_name", "size"},
-		)
+	)
 )
 
 func serve(cmd *cobra.Command, args []string) error {
@@ -57,10 +57,7 @@ func serve(cmd *cobra.Command, args []string) error {
 	defer cpuTicker.Stop()
 	go func() {
 		for {
-			select {
-			case <- cpuTicker.C:
-			}
-			fmt.Println("cpuTemp")
+			<-cpuTicker.C
 			cpuTemp.Inc()
 		}
 	}()
@@ -69,14 +66,11 @@ func serve(cmd *cobra.Command, args []string) error {
 	defer hdTicker.Stop()
 	go func() {
 		for {
-			select {
-			case <- hdTicker.C:
-			}
-			fmt.Println("hdFailure")
+			<-hdTicker.C
 			hdFailure.With(prometheus.Labels{
-					"hd_name": "/dev/xxx1",
-					"size": "6T",
-				}).Set(100)
+				"hd_name": "/dev/xxx1",
+				"size":    "6T",
+			}).Set(100)
 		}
 	}()
 
@@ -88,16 +82,12 @@ func serve(cmd *cobra.Command, args []string) error {
 	}()
 
 	select {
-	case <- ctx.Done():
-	case <- errChan:
+	case <-ctx.Done():
+	case <-errChan:
 	}
 
 	return nil
 }
-
-
-
-
 
 /*
 source:
