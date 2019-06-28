@@ -24,6 +24,6 @@ var (
 			Name: "request_path_sum",
 			Help: "show request time by path",
 		},
-		[]string{"method", "path"},
+		[]string{"method", "path", "status_code"},
 	)
 )
