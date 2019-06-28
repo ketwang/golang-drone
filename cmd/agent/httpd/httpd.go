@@ -12,6 +12,7 @@ import (
 func NewRestfulServer(addr string, logger *zap.Logger) http.Server {
 	prometheus.MustRegister(hdFailure)
 	prometheus.MustRegister(cpuTemp)
+	prometheus.MustRegister(httpAction)
 
 	cpuTicker := time.NewTicker(1 * time.Second)
 	defer cpuTicker.Stop()
