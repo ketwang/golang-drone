@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 	"os"
+	"util/cmd/agent/httpd"
 	"util/cmd/agent/ui"
 	"util/version"
 )
@@ -15,6 +16,8 @@ func main() {
 	rootCmd.AddCommand(version.NewCommand())
 
 	rootCmd.AddCommand(ui.UiCommand)
+
+	rootCmd.AddCommand(httpd.HttpCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
