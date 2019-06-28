@@ -2,9 +2,7 @@ package serve
 
 import (
 	"context"
-	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"util/cmd/agent/httpd"
 	"util/pkg/singal"
@@ -24,14 +22,16 @@ func serve(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile("/backend/golang-drone/cmd/agent/config.yaml")
+	/*
+		viper.SetConfigType("yaml")
+		viper.SetConfigFile("/backend/golang-drone/cmd/agent/config.yaml")
 
-	if err := viper.ReadInConfig(); err != nil {
-		return err
-	}
+		if err := viper.ReadInConfig(); err != nil {
+			return err
+		}
 
-	fmt.Println(viper.Get("listen.port"))
+		fmt.Println(viper.Get("listen.port"))
+	*/
 
 	ctx := singal.WithSignalsContext(context.Background())
 
