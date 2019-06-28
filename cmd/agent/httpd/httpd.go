@@ -1,57 +1,17 @@
 package httpd
 
 import (
-	"context"
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"net/http"
+	"net/http/pprof"
 	"time"
-	"util/pkg/singal"
 )
 
-var (
-	HttpCmd = &cobra.Command{
-		Use:   "serve",
-		Short: "start a http server",
-		RunE:  serve,
-	}
-
-	cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "cpu_temp_cal",
-		Help: "cpu temp cal.",
-		ConstLabels: map[string]string{
-			"cpu_num": "all",
-		},
-	})
-
-	hdFailure = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{
-			Name: "hdd_failure_counter",
-			Help: "show hdd failure counter",
-		},
-		[]string{"hd_name", "size"},
-	)
-)
-
-func serve(cmd *cobra.Command, args []string) error {
-	viper.SetConfigType("yaml")
-	viper.SetConfigFile("/backend/golang-drone/cmd/agent/config.yaml")
-
-	if err := viper.ReadInConfig(); err != nil {
-		return err
-	}
-
-	port := viper.GetString("listen.port")
-	fmt.Println(port)
-
+func NewRestfulServer(addr string, logger *zap.Logger) http.Server {
 	prometheus.MustRegister(hdFailure)
 	prometheus.MustRegister(cpuTemp)
-
-	var errChan chan error
-	ctx := singal.WithSignalsContext(context.Background())
 
 	cpuTicker := time.NewTicker(1 * time.Second)
 	defer cpuTicker.Stop()
@@ -74,37 +34,16 @@ func serve(cmd *cobra.Command, args []string) error {
 		}
 	}()
 
-	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		if err := http.ListenAndServe(":9999", nil); err != nil {
-			errChan <- err
-		}
-	}()
+	mux := http.NewServeMux()
 
-	select {
-	case <-ctx.Done():
-	case <-errChan:
-	}
+	mux.Handle("/metrics", promhttp.Handler())
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	return nil
+	wrapperMux := NewHttpHandler(mux, logger)
+
+	return http.Server{Addr: addr, Handler: wrapperMux}
 }
-
-/*
-source:
-  prometheus server
-  push gateway
-  jobs/exporter
-
-data model:
-  metric name:
-  label:
-  sample:
-
-<metric name>{<label name>=<label value>, …}
-
-counter:
-  counter: 累加型metric
-  Gauge:   常规metric、可以任意加减
-  Histogram: 柱状图histogram
-  Summary: 类似于histigram，但是提供count和sum功能；童工百分位功能
-*/
