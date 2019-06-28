@@ -4,6 +4,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -50,7 +51,7 @@ func (d *Decorator) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	httpAction.With(prometheus.Labels{
 		"path":        r.URL.Path,
 		"method":      r.Method,
-		"status_code": string(loggerWriter.statusCode),
+		"status_code": strconv.Itoa(loggerWriter.statusCode),
 	}).Inc()
 
 	d.logger.Info("",
